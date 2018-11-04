@@ -1,0 +1,27 @@
+#ABNF 1.0 UTF-8;
+business lucky_number;
+#include "pre_word.lst"
+root main;
+#ABNF HEAD-END;
+
+
+//业务唤醒前缀词
+$pre_word = ($u_LST_pre_word);
+
+$l_bizname{bizname} = 幸运数字|幸运数;
+
+/*业务唤醒,唤醒业务方式如下，
+	1、前缀词+业务唤醒词；
+	2、前缀词+业务唤醒词+用户意图；
+	3、进入业务流程后，之后用户可以直接交互，不需要加业务唤醒词
+*/
+
+$search = 查|问|看|查查|问问|看看|查看|查下|查一下|看下|看一下|报一下|播报|播报下|播报一下;
+$my = 我[的];
+$current = (当前|现在|目前|这会|最近|今天)[的];
+$my_current=($my$current)|($current$my)|$my|$current;
+$search_my_lucknumber = $search[$my_current]$l_bizname;
+
+$c_bizname = [$pre_word]$l_bizname;
+
+$main{biz:lucky_number} = $_ti_ch_<3->($c_bizname|$search_my_lucknumber)$_ti_ch_<5-> ;
