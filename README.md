@@ -1,0 +1,1 @@
+Adaper server for DingDong voice skill platform.
