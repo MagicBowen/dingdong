@@ -1,9 +1,5 @@
 const logger = require('../utils/logger').logger('controller-message')
 
-function getCurrentTimeStamp() {
-    return Math.floor(Date.now() / 1000)
-}
-
 var index = async (ctx, next) => {
     await ctx.render('index.html');
 };
