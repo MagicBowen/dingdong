@@ -1,31 +1,57 @@
 const logger = require('../utils/logger').logger('controller-message')
+const ChatBot = require('../utils/chatbot')
+const config = require('../config.json')
 
 var index = async (ctx, next) => {
     await ctx.render('index.html');
 };
 
-var handleMessage = async (ctx, next) => {
-    const message = ctx.request.body
-    logger.debug(JSON.stringify(message))
-    ctx.response.type = "application/json";
-    ctx.response.status = 200;
-    const response = {
+function isIndicateQuit(response) {
+    if (!response || !response.data) return false
+    return response.data.filter((data) => {return data.type === 'quit-skill'}).length > 0
+}
+
+function handleQuery(query) {
+    logger.debug('receive query : ' + query)
+    const chatbot = new ChatBot('indentifyCode', config['chatbot_url'])
+    const userId = query.user.user_id
+
+    let response = null
+
+    if (query.session.is_new) {
+        response = await chatbot.replyToEvent(userId, 'open-skill-indentifyCode')
+    } else {
+        response = await chatbot.replyToText(userId, query.input_text)
+    }
+    
+    logger.debug('response : ' + response)
+    return {
         "directive": {
-        "directive_items": [
+            "directive_items": [
             {
-                "content": "您的幸运数字是88888",
+                "content": response.reply,
                 "type": "1"
-            }
-        ]
-        },
-        "extend":{"NO_REC":"0"},
-        "is_end":true,
-        "sequence":message.sequence,
-        "timestamp":Date.now(),
-        "versionid": "1.0"
-    };
-    logger.debug(JSON.stringify(response))
-    ctx.response.body = response
+            }]
+            },
+            "extend":{"NO_REC":"0"},
+            "is_end": isIndicateQuit(response),
+            "sequence": query.sequence,
+            "timestamp": Date.now(),
+            "versionid": "1.0"
+    }
+}
+
+var handleMessage = async (ctx, next) => {
+    try {
+        const response = await handleQuery(ctx.request.body)
+        ctx.response.type = "application/json";
+        ctx.response.status = 200;
+        ctx.response.body = response        
+    } catch(err) {
+        ctx.response.type = "application/json";
+        ctx.response.status = 404;
+        ctx.response.body = {reason : err}
+    }
 }
 
 module.exports = {
