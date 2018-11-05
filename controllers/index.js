@@ -35,7 +35,7 @@ async function handleQuery(query) {
                 "type": "1"
             }]
             },
-            "extend":{"NO_REC":"1"},
+            "extend":{"NO_REC":"0"},
             "is_end": isIndicateQuit(response),
             "sequence": query.sequence,
             "timestamp": Date.now(),
