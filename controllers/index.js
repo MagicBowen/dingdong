@@ -12,7 +12,7 @@ function isIndicateQuit(response) {
 }
 
 async function handleQuery(query) {
-    logger.debug('receive query : ' + query)
+    logger.debug('receive query : ' + JSON.stringify(query))
     const chatbot = new ChatBot('indentifyCode', config['chatbot_url'])
     const userId = query.user.user_id
 
@@ -24,7 +24,7 @@ async function handleQuery(query) {
         response = await chatbot.replyToText(userId, query.input_text)
     }
     
-    logger.debug('response : ' + response)
+    logger.debug('response : ' + JSON.stringify(response))
     return {
         "directive": {
             "directive_items": [
