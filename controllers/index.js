@@ -20,6 +20,8 @@ async function handleQuery(query) {
 
     if (query.session.is_new) {
         response = await chatbot.replyToEvent(userId, 'open-skill-indentifyCode')
+    } else if (query.ended_reason === "USER_END") {
+        response = await chatbot.replyToEvent(userId, 'quit-skill-indentifyCode')
     } else {
         response = await chatbot.replyToText(userId, query.input_text)
     }
@@ -33,7 +35,7 @@ async function handleQuery(query) {
                 "type": "1"
             }]
             },
-            "extend":{"NO_REC":"0"},
+            "extend":{"NO_REC":"1"},
             "is_end": isIndicateQuit(response),
             "sequence": query.sequence,
             "timestamp": Date.now(),
