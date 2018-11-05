@@ -25,7 +25,7 @@ var handleMessage = async (ctx, next) => {
         "extend":{"NO_REC":"0"},
         "is_end":true,
         "sequence":message.sequence,
-        "timestamp":getCurrentTimeStamp(),
+        "timestamp":Date.now(),
         "versionid": "1.0"
     };
     logger.debug(JSON.stringify(response))
