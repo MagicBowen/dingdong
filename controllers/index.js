@@ -13,7 +13,7 @@ var handleMessage = async (ctx, next) => {
     logger.debug(JSON.stringify(message))
     ctx.response.type = "application/json";
     ctx.response.status = 200;
-    ctx.response.body = {
+    const response = {
         "directive": {
         "directive_items": [
             {
@@ -28,6 +28,8 @@ var handleMessage = async (ctx, next) => {
         "timestamp":getCurrentTimeStamp(),
         "versionid": "1.0"
     };
+    logger.debug(JSON.stringify(response))
+    ctx.response.body = response
 }
 
 module.exports = {
