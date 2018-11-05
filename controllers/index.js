@@ -11,7 +11,7 @@ function isIndicateQuit(response) {
     return response.data.filter((data) => {return data.type === 'quit-skill'}).length > 0
 }
 
-function handleQuery(query) {
+async function handleQuery(query) {
     logger.debug('receive query : ' + query)
     const chatbot = new ChatBot('indentifyCode', config['chatbot_url'])
     const userId = query.user.user_id
