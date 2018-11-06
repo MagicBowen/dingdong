@@ -15,15 +15,16 @@ async function handleQuery(query) {
     logger.debug('receive query : ' + JSON.stringify(query))
     const chatbot = new ChatBot('indentifyCode', config['chatbot_url'])
     const userId = query.user.user_id
+    const userContext = {source : 'dingdong', support_display : false}
 
     let response = null
 
     if (query.session.is_new) {
-        response = await chatbot.replyToEvent(userId, 'open-skill-indentifyCode')
+        response = await chatbot.replyToEvent(userId, 'open-skill-indentifyCode', userContext)
     } else if (query.ended_reason === "USER_END") {
-        response = await chatbot.replyToEvent(userId, 'quit-skill-indentifyCode')
+        response = await chatbot.replyToEvent(userId, 'quit-skill-indentifyCode', userContext)
     } else {
-        response = await chatbot.replyToText(userId, query.input_text)
+        response = await chatbot.replyToText(userId, query.input_text, userContext)
     }
     
     logger.debug('response : ' + JSON.stringify(response))

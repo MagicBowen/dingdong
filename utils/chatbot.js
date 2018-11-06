@@ -7,19 +7,21 @@ class Chatbot {
         this.uri = uri;
     }
     
-    async replyToText(userId, text) {
+    async replyToText(userId, text, userContext) {
         let data = { query   : { query : text, confidence : 1.0 }, 
                      session : userId, 
-                     agent   : this.agent };
+                     agent   : this.agent,
+                     userContext : userContext };
 
         let response = await postJson(this.uri, data);
         return this.formatResponse(response);
     }
 
-    async replyToEvent(userId, eventType, params) {
+    async replyToEvent(userId, eventType, userContext, params) {
         let data = { event   : { name : eventType, content : params },
                      session : userId, 
-                     agent   : this.agent};
+                     agent   : this.agent,
+                     userContext : userContext};
 
         let response = await postJson(this.uri, data);
         return this.formatResponse(response);
