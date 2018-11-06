@@ -25,4 +25,4 @@ $search_my_lucknumber = $search[$my_current]$l_bizname;
 $c_bizname = [$pre_word]$l_bizname;
 $any_words{noise} = $_ti_ch_<1-30>;
 
-$main{lucky_number}=($_ti_ch_<3->($c_bizname|$search_my_lucknumber)$_ti_ch_<5->)|$any_words;
+$main{biz: lucky_number}=($_ti_ch_<3->($c_bizname|$search_my_lucknumber)$_ti_ch_<5->)|$any_words;
