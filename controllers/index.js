@@ -11,18 +11,28 @@ function isIndicateQuit(response) {
     return response.data.filter((data) => {return data.type === 'quit-skill'}).length > 0
 }
 
+function getAgentName(query) {
+    const AGENT_MAP = {
+        'lucky_number' : 'course-record',
+        'lucky_number' : 'indentifyCode'
+    }
+    return AGENT_MAP[query.application_info.application_name]
+}
+
 async function handleQuery(query) {
     logger.debug('receive query : ' + JSON.stringify(query))
-    const chatbot = new ChatBot('indentifyCode', config['chatbot_url'])
+    const agent = getAgentName(query)
     const userId = query.user.user_id
     const userContext = {source : 'dingdong', support_display : false}
+
+    const chatbot = new ChatBot(agent, config['chatbot_url'])
 
     let response = null
 
     if (query.session.is_new) {
-        response = await chatbot.replyToEvent(userId, 'open-skill-indentifyCode', userContext)
+        response = await chatbot.replyToEvent(userId, 'open-skill-' + agent, userContext)
     } else if (query.ended_reason === "USER_END") {
-        response = await chatbot.replyToEvent(userId, 'quit-skill-indentifyCode', userContext)
+        response = await chatbot.replyToEvent(userId, 'quit-skill-' + agent, userContext)
     } else {
         response = await chatbot.replyToText(userId, query.input_text, userContext)
     }

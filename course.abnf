@@ -1,0 +1,21 @@
+#ABNF 1.0 UTF-8;
+business my_course;
+#include "pre_word.lst"
+root main;
+#ABNF HEAD-END;
+
+//业务唤醒前缀词
+$pre_word = ($u_LST_pre_word);
+
+$l_bizname{bizname} = 我的课表|课程表|课表;
+
+/*业务唤醒,唤醒业务方式如下，
+	1、前缀词+业务唤醒词；
+	2、前缀词+业务唤醒词+用户意图；
+	3、进入业务流程后，之后用户可以直接交互，不需要加业务唤醒词
+*/
+
+$c_bizname = [$pre_word]$l_bizname;
+$any_words{noise} = $_ti_ch_<1-30>;
+
+$main{biz: my_course}=($_ti_ch_<3->$c_bizname$_ti_ch_<5->)|$any_words;
