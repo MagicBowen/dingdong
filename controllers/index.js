@@ -19,6 +19,20 @@ function getAgentName(query) {
     return AGENT_MAP[query.application_info.application_name]
 }
 
+function getStartSkillEvent(agent) {
+    if (agent === 'course-record') {
+        return 'open-app'
+    }
+    return 'open-skill-' + agent
+}
+
+function getQuitSkillEvent(agent) {
+    if (agent === 'course-record') {
+        return 'close-app'
+    }
+    return 'quit-skill-' + agent
+}
+
 async function handleQuery(query) {
     logger.debug('receive query : ' + JSON.stringify(query))
     const agent = getAgentName(query)
@@ -30,9 +44,9 @@ async function handleQuery(query) {
     let response = null
 
     if (query.session.is_new) {
-        response = await chatbot.replyToEvent(userId, 'open-skill-' + agent, userContext)
+        response = await chatbot.replyToEvent(userId, getStartSkillEvent(agent), userContext)
     } else if (query.ended_reason === "USER_END") {
-        response = await chatbot.replyToEvent(userId, 'quit-skill-' + agent, userContext)
+        response = await chatbot.replyToEvent(userId, getQuitSkillEvent(agent), userContext)
     } else {
         response = await chatbot.replyToText(userId, query.input_text, userContext)
     }
