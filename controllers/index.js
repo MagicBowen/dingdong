@@ -13,7 +13,7 @@ function isIndicateQuit(response) {
 
 function getAgentName(query) {
     const AGENT_MAP = {
-        'lucky_number' : 'course-record',
+        'my_course' : 'course-record',
         'lucky_number' : 'indentifyCode'
     }
     return AGENT_MAP[query.application_info.application_name]
