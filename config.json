@@ -1,5 +1,6 @@
 {
     "port" : 8890,
     "host" : "127.0.0.1",
-    "chatbot_url" : "https://xiaodamp.com/api/chatbot/"
+    "chatbot_url" : "https://xiaodamp.com/api/chatbot/",
+    "aes_key" : "KD4kyN1crLqOaRf8QpkfOTHhd2lscisWBZAiAhf4IbYKD4kyN1crLqOaRf8QpkfOTHhd2lscisWBZAiAhf4IbYKD4kyN1crLqOaRf8QpkfOTHhd2lscisWBZAiAhf4Ib"
 }
