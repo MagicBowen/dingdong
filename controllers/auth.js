@@ -19,13 +19,13 @@ var authenticate = async (ctx, next) => {
     try {
         const request = decrypt(config.aes_key, ctx.query.state)
         logger.debug('receive auth request : ' + JSON.stringify(request))
-        const requestForCode = {userId : state.userid, platform: "dingdong", skill: "course-record"}
+        const requestForCode = {userId : request.userid, platform: "dingdong", skill: "course-record"}
         const result = await postjson(config.bing_code_url, requestForCode)
         await ctx.render('auth.html', {code : result.code})
     } catch(err) {
         ctx.response.type = "application/json"
         ctx.response.status = 404
-        ctx.response.body = {reason : err}
+        ctx.response.body = {reason : JSON.stringify(err)}
     }
 }
 
