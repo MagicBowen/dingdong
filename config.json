@@ -1,7 +1,0 @@
-{
-    "port" : 8890,
-    "host" : "127.0.0.1",
-    "chatbot_url" : "https://xiaodamp.com/api/chatbot/",
-    "bing_code_url" : "http://106.15.177.105/asst/bindingCode",
-    "aes_key" : "KD4kyN1crLqOaRf8QpkfOTHhd2lscisWBZAiAhf4IbYKD4kyN1crLqOaRf8QpkfOTHhd2lscisWBZAiAhf4IbYKD4kyN1crLqOaRf8QpkfOTHhd2lscisWBZAiAhf4Ib"
-}
