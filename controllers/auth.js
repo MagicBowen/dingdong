@@ -16,9 +16,9 @@ var decrypt = (key, data) => {
 
 var authenticate = async (ctx, next) => {
     try {
-        const request = decrypt(config.aes_key, ctx.query.state)
-        logger.debug('receive auth request : ' + JSON.stringify(request))
-        await ctx.render('auth.html')
+        // const request = decrypt(config.aes_key, ctx.query.state)
+        // logger.debug('receive auth request : ' + JSON.stringify(request))
+        await ctx.render('auth.html', {code : 12345})
     } catch(err) {
         ctx.response.type = "application/json"
         ctx.response.status = 404
