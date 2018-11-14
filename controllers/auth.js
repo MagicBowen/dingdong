@@ -17,11 +17,12 @@ var decrypt = (key, data) => {
 
 var authenticate = async (ctx, next) => {
     try {
-        const request = decrypt(config.aes_key, ctx.query.state)
-        logger.debug('receive auth request : ' + JSON.stringify(request))
-        const requestForCode = {userId : request.userid, platform: "dingdong", skill: "course-record"}
-        const result = await postjson(config.bing_code_url, requestForCode)
-        await ctx.render('auth.html', {code : result.code})
+        // const request = decrypt(config.aes_key, ctx.query.state)
+        // logger.debug('receive auth request : ' + JSON.stringify(request))
+        // const requestForCode = {userId : request.userid, platform: "dingdong", skill: "course-record"}
+        // const result = await postjson(config.bing_code_url, requestForCode)
+        // await ctx.render('auth.html', {code : result.code})
+        await ctx.render('auth.html', {code : 11111})
     } catch(err) {
         ctx.response.type = "application/json"
         ctx.response.status = 404
