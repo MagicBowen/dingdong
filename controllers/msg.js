@@ -2,7 +2,9 @@ const logger = require('../utils/logger').logger('controller-msg')
 const ChatBot = require('../utils/chatbot')
 const config = require('../config.json')
 
-function isIndicateQuit(response) {
+function isIndicateQuit(agent, response) {
+    if (agent === 'indentifyCode') return true
+    if (response.reply.indexOf('哒尔文') != -1) return true
     if (!response || !response.data) return false
     return response.data.filter((data) => {return data.type === 'quit-skill'}).length > 0
 }
@@ -57,7 +59,7 @@ async function handleQuery(query) {
             }]
             },
             "extend":{"NO_REC":"0"},
-            "is_end": isIndicateQuit(response),
+            "is_end": isIndicateQuit(agent, response),
             "sequence": query.sequence,
             "timestamp": Date.now(),
             "versionid": "1.0"
