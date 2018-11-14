@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>绑定授权</title>
 	<link rel="stylesheet" href="static/css/bootstrap.min.css">
-	<script src="static/js/jquery.min.js"></script>
-    <script src="static/js/bootstrap.min.js"></script>
+	<!-- <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
     <style type="text/css">
         #body {
             padding:5px 30px 50px;
@@ -15,12 +16,15 @@
 </head>
 <body>
     <div class="container" id="body">
+        <div class="row" align="center">
+            <img src="/images/avatar.png" />
+        </div>
         <div class="row">
             <h4>请按照以下步骤完成账号绑定：</h4>
             <ol>
                 <li>请打开微信，搜索小程序 <span style="font-weight: bold;color:red;">“哒尔文”</span></li>
-                <li>点击 <span style="font-weight: bold;">“绑定智能音箱”</span>，然后选择 <span style="font-weight: bold;">“京东音箱”</span></li>
-                <li>在“验证码”的输入框中输入：<span style="font-weight: bold;color:red;">{{code}}</span>，完成绑定</li>
+                <li>点击 <span style="font-weight: bold;">“绑定智能音箱”</span>，然后选择 <span style="font-weight: bold;">“叮咚音箱”</span></li>
+                <li>在“验证码”的输入框中输入：<span style="font-weight: bold;color:red;">{{code}} </span> <button class="btn" data-clipboard-action="copy" data-clipboard-text="{{code}}"><span style="font-weight: bold;font-size:13px;"> 复制 </span></button>，完成绑定</li>
                 <li>任何时候通过在叮咚音箱APP的技能页上点击“解除授权”，然后再次“授权”，就可以获取新的验证码，重新绑定</li>
             </ol>
         </div>
