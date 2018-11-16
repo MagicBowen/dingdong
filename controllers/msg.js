@@ -67,7 +67,7 @@ async function handleQuery(query) {
     }
     
     logger.debug('response : ' + JSON.stringify(response))
-    return {
+    const result = {
         "directive": {
             "directive_items": getDirectives(response)
             },
@@ -77,6 +77,8 @@ async function handleQuery(query) {
             "timestamp": Date.now(),
             "versionid": "1.0"
     }
+    logger.debug('result : ' + JSON.stringify(result))
+    return result
 }
 
 var handleMessage = async (ctx, next) => {
