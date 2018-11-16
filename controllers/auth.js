@@ -22,6 +22,7 @@ var authenticate = async (ctx, next) => {
         const requestForCode = {userId : request.userid, platform: "dingdong", skill: "course-record"}
         const result = await postjson(config.bing_code_url, requestForCode)
         await ctx.render('auth.html', {code : result.code})
+        // await ctx.render('auth.html', {code : 10000})
     } catch(err) {
         ctx.response.type = "application/json"
         ctx.response.status = 404
