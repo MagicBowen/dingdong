@@ -12,7 +12,8 @@ function isIndicateQuit(agent, response) {
 function getAgentName(query) {
     const AGENT_MAP = {
         'my_course' : 'course-record',
-        'lucky_number' : 'indentifyCode'
+        'lucky_number' : 'indentifyCode',
+        'dictation' : 'dictation'
     }
     return AGENT_MAP[query.application_info.application_name]
 }
@@ -29,6 +30,22 @@ function getQuitSkillEvent(agent) {
         return 'close-app'
     }
     return 'quit-skill-' + agent
+}
+
+function getDirectives(response) {
+    const directives = []
+    if (response.reply) {
+        directives.push({"content": response.reply, "type": "1"})
+    }
+    for (let data of response.data) {
+        if (data.type && data.type === 'play-audio' && data['audio-url']) {
+            directives.push({"content": data['audio-url'], "type": "2"})
+        }
+        if (data.type && data.type === 'text' && data['reply']) {
+            directives.push({"content": data['reply'], "type": "1"})
+        }
+    }
+    return directives
 }
 
 async function handleQuery(query) {
@@ -52,11 +69,7 @@ async function handleQuery(query) {
     logger.debug('response : ' + JSON.stringify(response))
     return {
         "directive": {
-            "directive_items": [
-            {
-                "content": response.reply,
-                "type": "1"
-            }]
+            "directive_items": getDirectives(response)
             },
             "extend":{"NO_REC":"0"},
             "is_end": isIndicateQuit(agent, response),
