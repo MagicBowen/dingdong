@@ -37,6 +37,7 @@ function getDirectives(response) {
     if (response.reply) {
         directives.push({"content": response.reply, "type": "1"})
     }
+    if (!response.data) return directives
     for (let data of response.data) {
         if (data.type && data.type === 'play-audio' && data['audio-url']) {
             directives.push({"content": data['audio-url'], "type": "2"})
