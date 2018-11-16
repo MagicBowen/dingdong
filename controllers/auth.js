@@ -1,6 +1,7 @@
 const logger = require('../utils/logger').logger('controller-auth')
 const crypto = require('crypto')
 const postjson = require('../utils/post-json')
+const agent = require('../utils/agent')
 const config = require('../config.json')
 
 var decrypt = (key, data) => {
@@ -17,9 +18,13 @@ var decrypt = (key, data) => {
 
 var authenticate = async (ctx, next) => {
     try {
+        let agentName = 'course-record'
+        if (ctx.query.skill) {
+            agentName = agent.getAgentName(ctx.query.skill)
+        }
         const request = decrypt(config.aes_key, ctx.query.state)
         logger.debug('receive auth request : ' + JSON.stringify(request))
-        const requestForCode = {userId : request.userid, platform: "dingdong", skill: "course-record"}
+        const requestForCode = {userId : request.userid, platform: "dingdong", skill: agentName}
         const result = await postjson(config.bing_code_url, requestForCode)
         await ctx.render('auth.html', {code : result.code})
         // await ctx.render('auth.html', {code : 10000})

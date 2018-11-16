@@ -1,5 +1,6 @@
 const logger = require('../utils/logger').logger('controller-msg')
 const ChatBot = require('../utils/chatbot')
+const agent = require('../utils/agent')
 const config = require('../config.json')
 
 function isIndicateQuit(agent, response) {
@@ -10,12 +11,7 @@ function isIndicateQuit(agent, response) {
 }
 
 function getAgentName(query) {
-    const AGENT_MAP = {
-        'my_course' : 'course-record',
-        'lucky_number' : 'indentifyCode',
-        'dictation' : 'dictation'
-    }
-    return AGENT_MAP[query.application_info.application_name]
+    return agent.getAgentName(query.application_info.application_name)
 }
 
 function getStartSkillEvent(agent) {
