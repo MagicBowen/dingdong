@@ -51,24 +51,6 @@ async function handleQuery(query) {
     const userId = query.user.user_id
     const userContext = {source : 'dingdong', support_display : false}
 
-    if (query.input_text === '测试一下') {
-        return {
-            "directive": {
-                "directive_items": [
-                    {"content": "请听写下面的词语", "type": "1"},
-                    {"content": "http://xiaodamp.cn/asst/tts/0c2ab9e0-e67c-11e8-9774-bd7f39b40d24.mp3", "type": "2"},
-                    {"content": "http://xiaoda.ai/audios/audio?name=05", "type": "2"},
-                    {"content": "听写完了吗?", "type": "1"}
-                ]
-                },
-                "extend":{"NO_REC":"0"},
-                "is_end": false,
-                "sequence": query.sequence,
-                "timestamp": Date.now(),
-                "versionid": "1.0"
-        }
-    }
-
     const chatbot = new ChatBot(agent, config['chatbot_url'])
 
     let response = null
