@@ -70,7 +70,7 @@ async function handleQuery(query) {
     logger.debug('response : ' + JSON.stringify(response))
     const result = {
         "directive": {
-            "directive_items": [{"content": response.reply, "type": "1"}]
+            "directive_items": getDirectives(response)
             },
             "extend":{"NO_REC":"0"},
             "is_end": isIndicateQuit(agent, response),
