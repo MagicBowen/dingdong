@@ -1,86 +1,89 @@
 const logger = require('../utils/logger').logger('controller-msg')
-const ChatBot = require('../utils/chatbot')
+const ChatBot = require('darwin-sdk').Chatbot
+const Query = require('darwin-sdk').Query
+const OpenSkillEvent = require('darwin-sdk').OpenSkillEvent
+const QuitSkillEvent = require('darwin-sdk').QuitSkillEvent
+const Response = require('darwin-sdk').Response
 const agent = require('../utils/agent')
 const config = require('../config.json')
-
-function isIndicateQuit(agent, response) {
-    if (agent === 'indentifyCode') return true
-    if (response.reply.indexOf('哒尔文') != -1) return true
-    if (!response || !response.data) return false
-    return response.data.filter((data) => {return data.type === 'quit-skill'}).length > 0
-}
 
 function getAgentName(query) {
     return agent.getAgentName(query.application_info.application_name)
 }
 
-function getStartSkillEvent(agent) {
-    if (agent === 'course-record') {
-        return 'open-app'
-    }
-    return 'open-skill-' + agent
-}
-
-function getQuitSkillEvent(agent) {
-    if (agent === 'course-record') {
-        return 'close-app'
-    }
-    return 'quit-skill-' + agent
-}
-
-function getDirectives(response) {
+function getDirectives(chatbotReply) {
     const directives = []
-    if (response.reply) {
-        directives.push({"content": response.reply, "type": "1"})
+    if (chatbotReply.getReply()) {
+        directives.push({"content": chatbotReply.getReply(), "type": "1"})
     }
-    if (!response.data) return directives
-    for (let data of response.data) {
-        if (data.type && data.type === 'play-audio' && data['audio-url']) {
-            directives.push({"content": data['audio-url'], "type": "2"})
+    if (!chatbotReply.getInstructs()) return directives
+    for (let instruct of chatbotReply.getInstructs()) {
+        if (instruct.type && instruct.type === 'play-audio' && instruct['url']) {
+            directives.push({"content": instruct['url'], "type": "2"})
         }
-        if (data.type && data.type === 'text' && data['reply']) {
-            directives.push({"content": data['reply'], "type": "1"})
+        if (instruct.type && instruct.type === 'text' && instruct['reply']) {
+            directives.push({"content": instruct['reply'], "type": "1"})
         }
     }
     return directives
 }
 
+async function getChatbotReply(query) {
+    const agent = getAgentName(query)
+    const userId = query.user.user_id
+
+    const chatbot = new ChatBot(config.chatbot_url, agent, config.source)
+
+    let chatbotReply = null
+    if (query.session.is_new) {
+        chatbotReply = await chatbot.dispose(new OpenSkillEvent(userId))
+    } else if (query.ended_reason === "USER_END") {
+        chatbotReply = await chatbot.dispose(new QuitSkillEvent(userId))
+    } else {
+        chatbotReply = await chatbot.dispose(new Query(userId, query.input_text))
+    }
+    
+    return {
+        "directive": {
+            "directive_items": getDirectives(chatbotReply)
+        },
+        "extend":{"NO_REC":"0"},
+        "is_end": chatbotReply.hasInstructOfQuit(),
+        "sequence": query.sequence,
+        "timestamp": Date.now(),
+        "versionid": "1.0"
+    }
+}
+
 async function handleQuery(query) {
     logger.debug('receive query : ' + JSON.stringify(query))
     const agent = getAgentName(query)
-    const userId = query.user.user_id
-    const userContext = {source : 'dingdong', support_display : false}
-
-    const chatbot = new ChatBot(agent, config['chatbot_url'])
-
-    let response = null
-
-    if (query.session.is_new) {
-        response = await chatbot.replyToEvent(userId, getStartSkillEvent(agent), userContext)
-    } else if (query.ended_reason === "USER_END") {
-        response = await chatbot.replyToEvent(userId, getQuitSkillEvent(agent), userContext)
-    } else {
-        response = await chatbot.replyToText(userId, query.input_text, userContext)
-    }
-    
-    logger.debug('response : ' + JSON.stringify(response))
-    const result = {
-        "directive": {
-            "directive_items": getDirectives(response)
-            },
+    if (!agent) {
+        logger.error("ERROR: not found agent")
+        return {
+            "directive": {
+                "directive_items": [
+                    {
+                        "content": "抱歉，没有找到该技能", "type": "1"
+                    }
+                ]
+            },            
             "extend":{"NO_REC":"0"},
-            "is_end": isIndicateQuit(agent, response),
+            "is_end": true,
             "sequence": query.sequence,
             "timestamp": Date.now(),
-            "versionid": "1.0"
+            "versionid": "1.0"            
+        }
     }
-    logger.debug('result : ' + JSON.stringify(result))
-    return result
+    return await getChatbotReply(query)
 }
 
 var handleMessage = async (ctx, next) => {
     try {
+        logger.debug(`receive: ${JSON.stringify(ctx.request.body)}`)
         const response = await handleQuery(ctx.request.body)
+        logger.debug(`reply: ${JSON.stringify(response)}`)
+
         ctx.response.type = "application/json";
         ctx.response.status = 200;
         ctx.response.body = response        
